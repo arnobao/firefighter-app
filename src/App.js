@@ -1,7 +1,10 @@
 
 import React, { useState } from 'react';
+import { auth } from './firebase';
+import Auth from './components/Auth';
 
 const App = () => {
+  const [user, setUser] = useState(null);
   const [selectedStation, setSelectedStation] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [equipment, setEquipment] = useState({
@@ -24,8 +27,22 @@ const App = () => {
     }));
   };
 
+  if (!user) {
+    return <Auth onLogin={() => setUser(auth.currentUser)} />;
+  }
+
   return (
     <div className="max-w-md mx-auto p-4 space-y-4">
+      <div className="flex justify-between items-center">
+        <span>Bienvenue {user.email.split('@')[0]}</span>
+        <button 
+          onClick={() => auth.signOut()} 
+          className="text-red-500"
+        >
+          Déconnexion
+        </button>
+      </div>
+
       {!selectedStation && (
         <div className="space-y-2">
           <h2 className="text-xl font-bold mb-4">Sélection de la Caserne</h2>
